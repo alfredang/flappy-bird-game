@@ -93,12 +93,12 @@
     function sfxSwoosh() { playTone(400, 0.1, 'sine', 0.06); playTone(500, 0.08, 'triangle', 0.04); }
 
     // ============ CONSTANTS ============
-    const GRAVITY = 0.38;
-    const FLAP = -6.2;
-    const PIPE_SPD = 2;
-    const PIPE_GAP = 110;
+    const GRAVITY = 0.35;
+    const FLAP = -6;
+    const PIPE_SPD = 1.8;
+    const PIPE_GAP = 140;
     const PIPE_W = 52;
-    const PIPE_DIST = 170;
+    const PIPE_DIST = 190;
     const GROUND_H = 112;
     const GROUND_Y = GH - GROUND_H;
     const BIRD_W = 34, BIRD_H = 24;
@@ -664,7 +664,7 @@
         const min = 60, max = GROUND_Y - PIPE_GAP - 60;
         const topH = Math.random() * (max - min) + min;
         const last = pipes[pipes.length - 1];
-        const x = last ? last.x + PIPE_DIST : GW + 60;
+        const x = last ? last.x + PIPE_DIST : GW + 140;
         pipes.push({ x, topH, scored: false });
     }
 
@@ -722,8 +722,8 @@
             // Collision
             if (bird.y + BIRD_H/2 > GROUND_Y - 2 || bird.y - BIRD_H/2 < 0) die();
             pipes.forEach(p => {
-                if (bird.x + BIRD_W/2 - 5 > p.x && bird.x - BIRD_W/2 + 5 < p.x + PIPE_W) {
-                    if (bird.y - BIRD_H/2 + 3 < p.topH || bird.y + BIRD_H/2 - 3 > p.topH + PIPE_GAP) die();
+                if (bird.x + BIRD_W/2 - 8 > p.x && bird.x - BIRD_W/2 + 8 < p.x + PIPE_W) {
+                    if (bird.y - BIRD_H/2 + 6 < p.topH || bird.y + BIRD_H/2 - 6 > p.topH + PIPE_GAP) die();
                 }
             });
         }
