@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Flappy Bird</title>
-    <!-- v8-fix -->
+    <!-- v9-fix -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -717,7 +717,10 @@
             return;
         }
         if (state === 'play') {
-            bird.vy = diff.flap;
+            // Only flap if not already going up fast
+            if (bird.vy > diff.flap * 0.5) {
+                bird.vy = diff.flap;
+            }
             bird.wing = Math.PI;
             sfxFlap();
             return;
@@ -783,7 +786,13 @@
         if (state === 'play' || state === 'dying') {
             bird.vy += diff.gravity;
             bird.vy = Math.min(bird.vy, diff.maxFall);
+            bird.vy = Math.max(bird.vy, -diff.maxFall); // also cap upward speed!
             bird.y += bird.vy;
+            // Clamp bird to screen — don't let it fly off top
+            if (bird.y < BIRD_H / 2) {
+                bird.y = BIRD_H / 2;
+                bird.vy = 0;
+            }
             if (bird.vy < -2) bird.rot = Math.max(-0.45, bird.rot - 0.1);
             else bird.rot = Math.min(Math.PI / 2, bird.rot + 0.035);
             bird.wing += bird.vy < 0 ? 0.45 : 0.1;
@@ -804,7 +813,7 @@
             });
 
             // Collision
-            if (bird.y + BIRD_H/2 > GROUND_Y - 2 || bird.y - BIRD_H/2 < 0) die();
+            if (bird.y + BIRD_H/2 > GROUND_Y - 2) die();
             pipes.forEach(p => {
                 if (bird.x + BIRD_W/2 - diff.hbx > p.x && bird.x - BIRD_W/2 + diff.hbx < p.x + PIPE_W) {
                     if (bird.y - BIRD_H/2 + diff.hby < p.topH || bird.y + BIRD_H/2 - diff.hby > p.topH + diff.gap) die();
