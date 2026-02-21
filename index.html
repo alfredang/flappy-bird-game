@@ -280,103 +280,106 @@
         ctx.translate(x, y);
         ctx.rotate(rot);
 
-        // Tail
-        ctx.fillStyle = '#e8e8e8';
+        const bw = BIRD_W, bh = BIRD_H;
+
+        // Tail feathers
+        ctx.fillStyle = '#ddd';
         ctx.beginPath();
-        ctx.moveTo(-BIRD_W/2 + 2, -2);
-        ctx.lineTo(-BIRD_W/2 - 6, -6);
-        ctx.lineTo(-BIRD_W/2 - 5, 2);
-        ctx.lineTo(-BIRD_W/2 - 6, 6);
-        ctx.lineTo(-BIRD_W/2 + 2, 3);
+        ctx.moveTo(-bw/2 + 3, -3);
+        ctx.lineTo(-bw/2 - 8, -7);
+        ctx.lineTo(-bw/2 - 7, 0);
+        ctx.lineTo(-bw/2 - 8, 7);
+        ctx.lineTo(-bw/2 + 3, 4);
         ctx.closePath();
         ctx.fill();
-        ctx.strokeStyle = '#888';
-        ctx.lineWidth = 0.8;
+        ctx.strokeStyle = '#999';
+        ctx.lineWidth = 1;
         ctx.stroke();
 
-        // Body outline shadow
-        ctx.fillStyle = '#cc8800';
+        // Body shadow
+        ctx.fillStyle = '#c87000';
         ctx.beginPath();
-        ctx.ellipse(0, 1, BIRD_W/2 + 1, BIRD_H/2 + 1, 0, 0, Math.PI * 2);
+        ctx.ellipse(0, 2, bw/2, bh/2, 0, 0, Math.PI * 2);
         ctx.fill();
 
-        // Body
-        const bg = ctx.createRadialGradient(-3, -4, 2, 0, 0, BIRD_W/2);
-        bg.addColorStop(0, '#ffe040');
-        bg.addColorStop(0.5, '#f8c830');
-        bg.addColorStop(1, '#e0a010');
+        // Main body — orange like original
+        const bg = ctx.createRadialGradient(-4, -3, 1, 0, 0, bw/2);
+        bg.addColorStop(0, '#ffc840');
+        bg.addColorStop(0.4, '#f0a020');
+        bg.addColorStop(0.8, '#e08010');
+        bg.addColorStop(1, '#d07008');
         ctx.fillStyle = bg;
         ctx.beginPath();
-        ctx.ellipse(0, 0, BIRD_W/2, BIRD_H/2, 0, 0, Math.PI * 2);
+        ctx.ellipse(0, 0, bw/2, bh/2, 0, 0, Math.PI * 2);
         ctx.fill();
-        ctx.strokeStyle = '#b07800';
-        ctx.lineWidth = 1.5;
+        // Outline
+        ctx.strokeStyle = '#805000';
+        ctx.lineWidth = 1.8;
         ctx.stroke();
 
-        // Belly
-        ctx.fillStyle = '#fff4c0';
+        // Belly patch (lighter)
+        ctx.fillStyle = '#fce0a0';
         ctx.beginPath();
-        ctx.ellipse(3, 4, BIRD_W/2 - 7, BIRD_H/2 - 6, 0.1, 0, Math.PI * 2);
+        ctx.ellipse(4, 4, bw/2 - 8, bh/2 - 5, 0.1, 0, Math.PI * 2);
         ctx.fill();
 
         // Wing
         const wy = Math.sin(bird.wing) * 5;
-        ctx.fillStyle = '#e0e0e0';
-        ctx.strokeStyle = '#999';
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.ellipse(-4, wy + 2, 11, 7, -0.15, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
-        // Wing inner
-        ctx.fillStyle = '#f5f5f5';
-        ctx.beginPath();
-        ctx.ellipse(-3, wy + 1, 7, 4, -0.15, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Eye white
-        ctx.fillStyle = '#fff';
-        ctx.strokeStyle = '#333';
+        ctx.fillStyle = '#eee';
+        ctx.strokeStyle = '#aaa';
         ctx.lineWidth = 1.2;
         ctx.beginPath();
-        ctx.ellipse(9, -5, 6.5, 7, 0, 0, Math.PI * 2);
+        ctx.ellipse(-3, wy + 1, 12, 7, -0.1, 0, Math.PI * 2);
         ctx.fill();
         ctx.stroke();
-
-        // Pupil
-        ctx.fillStyle = '#111';
-        ctx.beginPath();
-        ctx.ellipse(11.5, -4.5, 3.2, 3.8, 0, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Eye shine
+        // Wing inner detail
         ctx.fillStyle = '#fff';
         ctx.beginPath();
-        ctx.arc(12.5, -6.5, 1.5, 0, Math.PI * 2);
+        ctx.ellipse(-2, wy, 7, 4, -0.1, 0, Math.PI * 2);
         ctx.fill();
 
-        // Beak top
-        ctx.fillStyle = '#f85030';
+        // Eye white — big round like original
+        ctx.fillStyle = '#fff';
         ctx.beginPath();
-        ctx.moveTo(13, -1);
-        ctx.quadraticCurveTo(24, -2, 22, 2);
-        ctx.lineTo(13, 3);
-        ctx.closePath();
+        ctx.arc(10, -4, 7, 0, Math.PI * 2);
         ctx.fill();
-        ctx.strokeStyle = '#a02010';
-        ctx.lineWidth = 0.8;
+        ctx.strokeStyle = '#222';
+        ctx.lineWidth = 1.5;
         ctx.stroke();
 
-        // Beak bottom
-        ctx.fillStyle = '#e04028';
+        // Pupil — big and centered-right
+        ctx.fillStyle = '#000';
         ctx.beginPath();
-        ctx.moveTo(13, 3);
-        ctx.lineTo(22, 2);
-        ctx.quadraticCurveTo(24, 5, 20, 6);
-        ctx.lineTo(13, 5);
+        ctx.arc(13, -4, 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Eye highlight
+        ctx.fillStyle = '#fff';
+        ctx.beginPath();
+        ctx.arc(14.5, -6, 1.8, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Beak — bright orange/red, two parts
+        // Top beak
+        ctx.fillStyle = '#f04030';
+        ctx.beginPath();
+        ctx.moveTo(14, -2);
+        ctx.lineTo(26, 1);
+        ctx.lineTo(14, 3);
         ctx.closePath();
         ctx.fill();
-        ctx.strokeStyle = '#a02010';
+        ctx.strokeStyle = '#901808';
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+        // Bottom beak (slightly lower, darker)
+        ctx.fillStyle = '#d03020';
+        ctx.beginPath();
+        ctx.moveTo(14, 3);
+        ctx.lineTo(24, 3);
+        ctx.lineTo(14, 7);
+        ctx.closePath();
+        ctx.fill();
+        ctx.strokeStyle = '#901808';
         ctx.stroke();
 
         ctx.restore();
@@ -578,26 +581,40 @@
         ctx.closePath();
     }
 
+    function drawStyledText(text, x, y, size, fillColor, strokeColor, strokeW, tilt) {
+        ctx.save();
+        ctx.translate(x, y);
+        if (tilt) ctx.rotate(tilt);
+        ctx.font = `900 ${size}px "Press Start 2P"`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        // Thick outline
+        ctx.lineWidth = strokeW || 4;
+        ctx.strokeStyle = strokeColor || '#543';
+        ctx.lineJoin = 'round';
+        ctx.miterLimit = 2;
+        ctx.strokeText(text, 0, 0);
+        // Fill
+        ctx.fillStyle = fillColor || '#fff';
+        ctx.fillText(text, 0, 0);
+        ctx.restore();
+    }
+
     function drawTitle() {
         ctx.save();
-        ctx.textAlign = 'center';
 
-        // Title "FLAPPY BIRD"
-        ctx.font = '20px "Press Start 2P"';
-        // Shadow
-        ctx.fillStyle = '#543';
-        ctx.fillText('FLAPPY', GW/2 + 2, 132);
-        ctx.fillText('BIRD', GW/2 + 2, 162);
-        // Main
-        ctx.fillStyle = '#fff';
-        ctx.fillText('FLAPPY', GW/2, 130);
-        ctx.fillText('BIRD', GW/2, 160);
+        // Title "Flappy Bird" — styled like original with thick outlines
+        // "Flappy" — white with green tint, thick dark outline
+        drawStyledText('Flappy', GW/2, 110, 28, '#fff', '#543', 5, -0.05);
+        // "Bird" — slightly offset, same style
+        drawStyledText('Bird', GW/2 + 10, 145, 28, '#fff', '#543', 5, 0.03);
 
-        // Tap to start
-        if (Math.floor(fc / 25) % 2 === 0) {
+        // Subtitle blink
+        if (Math.floor(fc / 20) % 2 === 0) {
             ctx.font = '9px "Press Start 2P"';
+            ctx.textAlign = 'center';
             ctx.fillStyle = '#543';
-            ctx.fillText('TAP TO START', GW/2, 320);
+            ctx.fillText('TAP TO START', GW/2, 310);
         }
 
         ctx.restore();
