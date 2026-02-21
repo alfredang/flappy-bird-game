@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Flappy Bird</title>
-    <!-- v9-fix -->
+    <!-- v10-fix -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -194,7 +194,7 @@
         const capH = 26, capOv = 3;
         const bodyX = px, bodyW = PIPE_W;
         const capX = px - capOv, capW = PIPE_W + capOv * 2;
-        const botY = topH + PIPE_GAP;
+        const botY = topH + diff.gap;
         const botH = GROUND_Y - botY;
 
         // --- TOP PIPE ---
