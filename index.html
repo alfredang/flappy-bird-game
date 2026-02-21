@@ -93,10 +93,10 @@
     function sfxSwoosh() { playTone(400, 0.1, 'sine', 0.06); playTone(500, 0.08, 'triangle', 0.04); }
 
     // ============ CONSTANTS ============
-    const GRAVITY = 0.35;
-    const FLAP = -6;
-    const PIPE_SPD = 1.8;
-    const PIPE_GAP = 140;
+    const GRAVITY = 0.25;
+    const FLAP = -4.5;
+    const PIPE_SPD = 1.6;
+    const PIPE_GAP = 145;
     const PIPE_W = 52;
     const PIPE_DIST = 190;
     const GROUND_H = 112;
@@ -632,7 +632,7 @@
         }
         if (state === 'ready') {
             state = 'play';
-            bird.vy = FLAP;
+            bird.vy = FLAP * 0.8;
             bird.wing = Math.PI;
             sfxFlap();
             addPipe();
@@ -699,6 +699,7 @@
 
         if (state === 'play' || state === 'dying') {
             bird.vy += GRAVITY;
+            bird.vy = Math.min(bird.vy, 6);
             bird.y += bird.vy;
             if (bird.vy < -2) bird.rot = Math.max(-0.45, bird.rot - 0.1);
             else bird.rot = Math.min(Math.PI / 2, bird.rot + 0.035);
