@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Flappy Bird</title>
-    <!-- v5 -->
+    <!-- v6-easy -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -94,12 +94,12 @@
     function sfxSwoosh() { playTone(400, 0.1, 'sine', 0.06); playTone(500, 0.08, 'triangle', 0.04); }
 
     // ============ CONSTANTS ============
-    const GRAVITY = 0.18;
-    const FLAP = -3.8;
-    const PIPE_SPD = 1.5;
-    const PIPE_GAP = 150;
+    const GRAVITY = 0.12;
+    const FLAP = -3;
+    const PIPE_SPD = 1.2;
+    const PIPE_GAP = 180;
     const PIPE_W = 52;
-    const PIPE_DIST = 190;
+    const PIPE_DIST = 220;
     const GROUND_H = 112;
     const GROUND_Y = GH - GROUND_H;
     const BIRD_W = 34, BIRD_H = 24;
@@ -662,10 +662,10 @@
     }
 
     function addPipe() {
-        const min = 60, max = GROUND_Y - PIPE_GAP - 60;
+        const min = 80, max = GROUND_Y - PIPE_GAP - 80;
         const topH = Math.random() * (max - min) + min;
         const last = pipes[pipes.length - 1];
-        const x = last ? last.x + PIPE_DIST : GW + 200;
+        const x = last ? last.x + PIPE_DIST : GW + 280;
         pipes.push({ x, topH, scored: false });
     }
 
@@ -700,7 +700,7 @@
 
         if (state === 'play' || state === 'dying') {
             bird.vy += GRAVITY;
-            bird.vy = Math.min(bird.vy, 4);
+            bird.vy = Math.min(bird.vy, 3);
             bird.y += bird.vy;
             if (bird.vy < -2) bird.rot = Math.max(-0.45, bird.rot - 0.1);
             else bird.rot = Math.min(Math.PI / 2, bird.rot + 0.035);
@@ -724,8 +724,8 @@
             // Collision
             if (bird.y + BIRD_H/2 > GROUND_Y - 2 || bird.y - BIRD_H/2 < 0) die();
             pipes.forEach(p => {
-                if (bird.x + BIRD_W/2 - 8 > p.x && bird.x - BIRD_W/2 + 8 < p.x + PIPE_W) {
-                    if (bird.y - BIRD_H/2 + 6 < p.topH || bird.y + BIRD_H/2 - 6 > p.topH + PIPE_GAP) die();
+                if (bird.x + BIRD_W/2 - 12 > p.x && bird.x - BIRD_W/2 + 12 < p.x + PIPE_W) {
+                    if (bird.y - BIRD_H/2 + 10 < p.topH || bird.y + BIRD_H/2 - 10 > p.topH + PIPE_GAP) die();
                 }
             });
         }
