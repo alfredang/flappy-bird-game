@@ -1,13 +1,13 @@
-# 🐦 Neon Flappy
+# 🐦 Flappy Bird
 
 <div align="center">
 
-![Neon Flappy](https://img.shields.io/badge/Neon-Flappy-00ffcc?style=for-the-badge&logo=gamepad&logoColor=white)
+![Flappy Bird](https://img.shields.io/badge/Flappy-Bird-73bf2e?style=for-the-badge&logo=gamepad&logoColor=white)
 ![HTML5](https://img.shields.io/badge/HTML5-Canvas-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/Vanilla-JS-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
-![Zero Dependencies](https://img.shields.io/badge/Dependencies-Zero-00ffcc?style=for-the-badge)
+![Zero Dependencies](https://img.shields.io/badge/Dependencies-Zero-73bf2e?style=for-the-badge)
 
-**A cyberpunk-themed Flappy Bird with neon aesthetics, particle trails & synthesized sound effects.**
+**A faithful recreation of the classic Flappy Bird with retro pixel aesthetics & synthesized sound effects.**
 
 [▶ Play Now](https://alfredang.github.io/flappy-bird-game/)
 
@@ -35,14 +35,14 @@
 
 ## ✨ Features
 
-- **Neon cyberpunk aesthetic** — glowing pipes, particle trails, nebula background
-- **Wave-based difficulty** — pipe gaps and speed scale with score
-- **Sound effects** — synthesized via Web Audio API (flap, score, hit, death, fanfare)
-- **Mute toggle** — sound on/off button
+- **Classic Flappy Bird style** — blue sky, green pipes, puffy clouds, city skyline
+- **Cute animated bird** — orange body, flapping wing, red beak, expressive eye
+- **Green pipes with caps** — highlights, shadows & outlines just like the original
+- **Sound effects** — synthesized via Web Audio API (flap, score, hit, death)
 - **High score tracking** — persisted in localStorage
-- **Mobile responsive** — touch to flap, optimized 9:16 aspect ratio
-- **Particle system** — engine trails, score celebrations, death bursts
-- **Screen flash** — impact feedback on collision
+- **Mobile responsive** — tap to flap, optimized portrait layout
+- **Retro pixel font** — Press Start 2P for authentic arcade feel
+- **Mute toggle** — sound on/off button
 - **Zero dependencies** — single HTML file, no frameworks
 
 ## 🎮 Controls
@@ -59,7 +59,7 @@
 | HTML5 Canvas | Game rendering |
 | Vanilla JavaScript | Game logic & physics |
 | Web Audio API | Synthesized sound effects |
-| CSS3 | UI overlay & neon styling |
+| CSS3 | UI overlay & retro styling |
 | GitHub Actions | Auto-deployment to Pages |
 
 ## 🏗️ Architecture
