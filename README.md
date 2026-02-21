@@ -19,38 +19,35 @@
 
 <div align="center">
 
-### Start Screen
-![Start Screen](screenshots/start-screen.png)
-
-### Gameplay
-![Gameplay](screenshots/gameplay.png)
-
-### Game Over
-![Game Over](screenshots/game-over.png)
+| Title Screen | Get Ready | Gameplay | Game Over |
+|:---:|:---:|:---:|:---:|
+| ![Title](screenshots/start-screen.png) | ![Get Ready](screenshots/get-ready.png) | ![Gameplay](screenshots/gameplay.png) | ![Game Over](screenshots/game-over.png) |
 
 ### Mobile
-<img src="screenshots/mobile-start.png" width="250" alt="Mobile Start"> &nbsp; <img src="screenshots/mobile-gameplay.png" width="250" alt="Mobile Gameplay">
+
+<img src="screenshots/mobile-start.png" width="200" alt="Mobile Start"> &nbsp; <img src="screenshots/mobile-gameplay.png" width="200" alt="Mobile Gameplay">
 
 </div>
 
 ## ✨ Features
 
-- **Classic Flappy Bird style** — blue sky, green pipes, puffy clouds, city skyline
-- **Cute animated bird** — orange body, flapping wing, red beak, expressive eye
-- **Green pipes with caps** — highlights, shadows & outlines just like the original
-- **Sound effects** — synthesized via Web Audio API (flap, score, hit, death)
+- **Classic Flappy Bird visuals** — blue sky, green pipes with caps & shading, puffy clouds, city skyline
+- **Cute illustrated bird** — yellow body, red beak, flapping wing, white tail
+- **GET READY screen** — with tap hand icon, just like the original
+- **Game Over panel** — score, best score, medals (bronze/silver/gold), NEW badge
+- **Sound effects** — synthesized via Web Audio API (flap, score, hit, swoosh)
 - **High score tracking** — persisted in localStorage
-- **Mobile responsive** — tap to flap, optimized portrait layout
-- **Retro pixel font** — Press Start 2P for authentic arcade feel
-- **Mute toggle** — sound on/off button
+- **Mobile responsive** — tap to flap, portrait-optimized 288×512 canvas
+- **Retro pixel font** — Press Start 2P
+- **Mute toggle** — sound on/off
 - **Zero dependencies** — single HTML file, no frameworks
 
 ## 🎮 Controls
 
 | Platform | Action |
 |----------|--------|
-| Desktop | `Space` / `↑` / Click to flap |
-| Mobile | Tap anywhere to flap |
+| Desktop | `Space` / `↑` / Click |
+| Mobile | Tap anywhere |
 
 ## 🖼️ Tech Stack
 
@@ -59,8 +56,7 @@
 | HTML5 Canvas | Game rendering |
 | Vanilla JavaScript | Game logic & physics |
 | Web Audio API | Synthesized sound effects |
-| CSS3 | UI overlay & retro styling |
-| GitHub Actions | Auto-deployment to Pages |
+| CSS3 | UI & scaling |
 
 ## 🏗️ Architecture
 
@@ -68,23 +64,17 @@
 flappy-bird-game/
 ├── index.html              # Complete game (single file)
 ├── screenshots/            # Playwright-captured screenshots
-├── .github/
-│   └── workflows/
-│       └── deploy.yml      # GitHub Pages deployment
 └── README.md
 ```
 
 ## 🚀 Getting Started
 
 ```bash
-# Clone the repo
 git clone https://github.com/alfredang/flappy-bird-game.git
-
-# Open in browser
 open index.html
 ```
 
-No build step needed — it's a single HTML file.
+No build step — single HTML file.
 
 ## 📝 License
 
