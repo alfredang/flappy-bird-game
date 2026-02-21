@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Flappy Bird</title>
-    <!-- v7-levels -->
+    <!-- v8-fix -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -702,11 +702,15 @@
             state = 'ready';
             readyTimer = 0;
             showScore = true;
+            // Reset bird position
+            bird.y = 180;
+            bird.vy = 0;
+            bird.rot = 0;
             return;
         }
         if (state === 'ready') {
             state = 'play';
-            bird.vy = diff.flap * 0.8;
+            bird.vy = diff.flap;
             bird.wing = Math.PI;
             sfxFlap();
             addPipe();
@@ -718,13 +722,19 @@
             sfxFlap();
             return;
         }
+        if (state === 'dying') {
+            return; // can't flap while dying
+        }
         if (state === 'dead') {
-            // Check if tap is on play button
             sfxSwoosh();
             resetGame();
             return;
         }
     }
+
+    // Also allow continuous flapping by holding space
+    let spaceHeld = false;
+    let flapCooldown = 0;
 
     function resetGame() {
         bird = { x: 68, y: 180, vy: 0, rot: 0, wing: 0, frame: 0 };
@@ -839,13 +849,19 @@
 
     // ============ INPUT ============
     document.addEventListener('keydown', e => {
+        e.preventDefault(); // prevent page scroll on ALL keys
         if (state === 'title') {
-            if (e.code === 'ArrowUp') { e.preventDefault(); selectedIdx = Math.max(0, selectedIdx - 1); sfxScore(); return; }
-            if (e.code === 'ArrowDown') { e.preventDefault(); selectedIdx = Math.min(LEVEL_KEYS.length - 1, selectedIdx + 1); sfxScore(); return; }
-            if (e.code === 'Space' || e.code === 'Enter') { e.preventDefault(); flap(); return; }
+            if (e.code === 'ArrowUp') { selectedIdx = Math.max(0, selectedIdx - 1); sfxScore(); return; }
+            if (e.code === 'ArrowDown') { selectedIdx = Math.min(LEVEL_KEYS.length - 1, selectedIdx + 1); sfxScore(); return; }
+            if (e.code === 'Space' || e.code === 'Enter') { flap(); return; }
             return;
         }
-        if (e.code === 'Space' || e.code === 'ArrowUp') { e.preventDefault(); flap(); }
+        if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') {
+            if (!e.repeat) flap(); // only flap on fresh press, not key repeat
+        }
+    });
+    document.addEventListener('keyup', e => {
+        e.preventDefault();
     });
     function handleCanvasTap(clientX, clientY) {
         const rect = canvas.getBoundingClientRect();
@@ -890,6 +906,8 @@
     });
 
     initWorld();
+    canvas.setAttribute('tabindex', '0');
+    canvas.focus();
     loop();
     </script>
 </body>
