@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Flappy Bird</title>
-    <!-- v6-easy -->
+    <!-- v7-levels -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -94,18 +94,27 @@
     function sfxSwoosh() { playTone(400, 0.1, 'sine', 0.06); playTone(500, 0.08, 'triangle', 0.04); }
 
     // ============ CONSTANTS ============
-    const GRAVITY = 0.12;
-    const FLAP = -3;
-    const PIPE_SPD = 1.2;
-    const PIPE_GAP = 180;
+    // Difficulty presets: [gravity, flap, pipeSpeed, pipeGap, pipeDist, maxFall, hitboxShrinkX, hitboxShrinkY]
+    const LEVELS = {
+        beginner: { name: 'BEGINNER', color: '#4caf50', gravity: 0.08, flap: -2.5, speed: 1.0, gap: 200, dist: 240, maxFall: 2.5, hbx: 14, hby: 12, firstPipe: 350 },
+        easy:     { name: 'EASY',     color: '#8bc34a', gravity: 0.12, flap: -3.0, speed: 1.2, gap: 180, dist: 220, maxFall: 3.0, hbx: 12, hby: 10, firstPipe: 280 },
+        medium:   { name: 'MEDIUM',   color: '#ff9800', gravity: 0.22, flap: -4.5, speed: 1.8, gap: 140, dist: 190, maxFall: 5.0, hbx: 6,  hby: 4,  firstPipe: 200 },
+        hard:     { name: 'HARD',     color: '#f44336', gravity: 0.32, flap: -5.8, speed: 2.2, gap: 115, dist: 170, maxFall: 7.0, hbx: 3,  hby: 2,  firstPipe: 140 },
+        insane:   { name: 'INSANE',   color: '#9c27b0', gravity: 0.40, flap: -6.5, speed: 2.8, gap: 100, dist: 155, maxFall: 9.0, hbx: 0,  hby: 0,  firstPipe: 100 },
+    };
+    const LEVEL_KEYS = ['beginner', 'easy', 'medium', 'hard', 'insane'];
+    let currentLevel = 'easy';
+    let diff = LEVELS[currentLevel];
+
     const PIPE_W = 52;
-    const PIPE_DIST = 220;
     const GROUND_H = 112;
     const GROUND_Y = GH - GROUND_H;
     const BIRD_W = 34, BIRD_H = 24;
 
     // ============ STATE ============
-    let best = parseInt(localStorage.getItem('fb_best') || '0');
+    function getBest() { return parseInt(localStorage.getItem('fb_best_' + currentLevel) || '0'); }
+    function setBest(v) { localStorage.setItem('fb_best_' + currentLevel, v); }
+    let best = getBest();
     let bird = { x: 68, y: 180, vy: 0, rot: 0, wing: 0, frame: 0 };
     let pipes = [], score = 0, state = 'title', fc = 0, groundX = 0;
     let flashAlpha = 0, dieY = 0, showScore = false;
@@ -393,12 +402,18 @@
         ctx.save();
         ctx.font = '28px "Press Start 2P"';
         ctx.textAlign = 'center';
-        // Shadow
         ctx.fillStyle = '#543';
         ctx.fillText(s, GW/2 + 2, 52);
-        // White
         ctx.fillStyle = '#fff';
         ctx.fillText(s, GW/2, 50);
+
+        // Level badge top-left
+        if (state === 'play') {
+            ctx.font = '6px "Press Start 2P"';
+            ctx.textAlign = 'left';
+            ctx.fillStyle = diff.color;
+            ctx.fillText(diff.name, 8, 18);
+        }
         ctx.restore();
     }
 
@@ -469,9 +484,14 @@
         // "GAME OVER" text
         ctx.font = '18px "Press Start 2P"';
         ctx.fillStyle = '#543';
-        ctx.fillText('GAME OVER', GW/2 + 2, 102);
+        ctx.fillText('GAME OVER', GW/2 + 2, 92);
         ctx.fillStyle = '#fff';
-        ctx.fillText('GAME OVER', GW/2, 100);
+        ctx.fillText('GAME OVER', GW/2, 90);
+
+        // Level badge
+        ctx.font = '7px "Press Start 2P"';
+        ctx.fillStyle = diff.color;
+        ctx.fillText(diff.name, GW/2, 106);
 
         // Score panel
         const px = GW/2 - 80, py = 120, pw = 160, ph = 90;
@@ -601,21 +621,71 @@
         ctx.restore();
     }
 
+    let selectedIdx = 1; // default: easy
+
     function drawTitle() {
         ctx.save();
 
-        // Title "Flappy Bird" — styled like original with thick outlines
-        // "Flappy" — white with green tint, thick dark outline
-        drawStyledText('Flappy', GW/2, 110, 28, '#fff', '#543', 5, -0.05);
-        // "Bird" — slightly offset, same style
-        drawStyledText('Bird', GW/2 + 10, 145, 28, '#fff', '#543', 5, 0.03);
+        // Title
+        drawStyledText('Flappy', GW/2, 80, 26, '#fff', '#543', 5, -0.05);
+        drawStyledText('Bird', GW/2 + 10, 112, 26, '#fff', '#543', 5, 0.03);
 
-        // Subtitle blink
+        // Difficulty selector
+        const sy = 195, rowH = 30;
+        ctx.textAlign = 'center';
+        ctx.font = '8px "Press Start 2P"';
+        ctx.fillStyle = '#543';
+        ctx.fillText('SELECT LEVEL', GW/2, sy - 18);
+
+        LEVEL_KEYS.forEach((key, i) => {
+            const lv = LEVELS[key];
+            const y = sy + i * rowH;
+            const selected = i === selectedIdx;
+
+            // Button bg
+            if (selected) {
+                // Selected highlight
+                drawRoundRect(GW/2 - 65, y - 10, 130, 24, 4);
+                ctx.fillStyle = lv.color;
+                ctx.fill();
+                ctx.strokeStyle = '#543';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                // Arrow indicators
+                ctx.fillStyle = '#543';
+                ctx.font = '10px "Press Start 2P"';
+                ctx.fillText('►', GW/2 - 78, y + 5);
+                ctx.fillText('◄', GW/2 + 78, y + 5);
+            } else {
+                drawRoundRect(GW/2 - 60, y - 8, 120, 20, 3);
+                ctx.fillStyle = 'rgba(255,255,255,0.4)';
+                ctx.fill();
+                ctx.strokeStyle = 'rgba(84,51,0,0.2)';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+
+            // Level name
+            ctx.font = selected ? '9px "Press Start 2P"' : '7px "Press Start 2P"';
+            ctx.fillStyle = selected ? '#fff' : '#765';
+            if (selected) { ctx.fillStyle = '#fff'; ctx.fillText(lv.name, GW/2 + 1, y + 5); }
+            ctx.fillStyle = selected ? '#fff' : '#765';
+            ctx.fillText(lv.name, GW/2, y + 4);
+        });
+
+        // Best score for selected level
+        const selBest = parseInt(localStorage.getItem('fb_best_' + LEVEL_KEYS[selectedIdx]) || '0');
+        if (selBest > 0) {
+            ctx.font = '7px "Press Start 2P"';
+            ctx.fillStyle = '#876';
+            ctx.fillText('BEST: ' + selBest, GW/2, sy + LEVEL_KEYS.length * rowH + 5);
+        }
+
+        // Instructions
         if (Math.floor(fc / 20) % 2 === 0) {
-            ctx.font = '9px "Press Start 2P"';
-            ctx.textAlign = 'center';
+            ctx.font = '7px "Press Start 2P"';
             ctx.fillStyle = '#543';
-            ctx.fillText('TAP TO START', GW/2, 310);
+            ctx.fillText('↑↓ SELECT  SPACE START', GW/2, GH - GROUND_H - 20);
         }
 
         ctx.restore();
@@ -626,6 +696,9 @@
         if (state === 'title') {
             initAudio();
             sfxSwoosh();
+            currentLevel = LEVEL_KEYS[selectedIdx];
+            diff = LEVELS[currentLevel];
+            best = getBest();
             state = 'ready';
             readyTimer = 0;
             showScore = true;
@@ -633,14 +706,14 @@
         }
         if (state === 'ready') {
             state = 'play';
-            bird.vy = FLAP * 0.8;
+            bird.vy = diff.flap * 0.8;
             bird.wing = Math.PI;
             sfxFlap();
             addPipe();
             return;
         }
         if (state === 'play') {
-            bird.vy = FLAP;
+            bird.vy = diff.flap;
             bird.wing = Math.PI;
             sfxFlap();
             return;
@@ -656,16 +729,15 @@
     function resetGame() {
         bird = { x: 68, y: 180, vy: 0, rot: 0, wing: 0, frame: 0 };
         pipes = []; score = 0; fc = 0; groundX = 0;
-        flashAlpha = 0; showScore = true;
-        state = 'ready';
-        readyTimer = 0;
+        flashAlpha = 0; showScore = false;
+        state = 'title';
     }
 
     function addPipe() {
-        const min = 80, max = GROUND_Y - PIPE_GAP - 80;
+        const min = 80, max = GROUND_Y - diff.gap - 80;
         const topH = Math.random() * (max - min) + min;
         const last = pipes[pipes.length - 1];
-        const x = last ? last.x + PIPE_DIST : GW + 280;
+        const x = last ? last.x + diff.dist : GW + diff.firstPipe;
         pipes.push({ x, topH, scored: false });
     }
 
@@ -675,7 +747,7 @@
         sfxHit();
         flashAlpha = 1;
         bird.vy = -5;
-        if (score > best) { best = score; localStorage.setItem('fb_best', best); }
+        if (score > best) { best = score; setBest(best); }
     }
 
     // ============ UPDATE ============
@@ -686,21 +758,21 @@
         if (state === 'title') {
             bird.y = 180 + Math.sin(fc * 0.07) * 10;
             bird.wing += 0.18;
-            groundX += PIPE_SPD;
+            groundX += 1.5;
             return;
         }
 
         if (state === 'ready') {
             bird.y = 180 + Math.sin(fc * 0.07) * 10;
             bird.wing += 0.18;
-            groundX += PIPE_SPD;
+            groundX += diff.speed;
             readyTimer++;
             return;
         }
 
         if (state === 'play' || state === 'dying') {
-            bird.vy += GRAVITY;
-            bird.vy = Math.min(bird.vy, 3);
+            bird.vy += diff.gravity;
+            bird.vy = Math.min(bird.vy, diff.maxFall);
             bird.y += bird.vy;
             if (bird.vy < -2) bird.rot = Math.max(-0.45, bird.rot - 0.1);
             else bird.rot = Math.min(Math.PI / 2, bird.rot + 0.035);
@@ -708,11 +780,11 @@
         }
 
         if (state === 'play') {
-            groundX += PIPE_SPD;
-            pipes.forEach(p => p.x -= PIPE_SPD);
+            groundX += diff.speed;
+            pipes.forEach(p => p.x -= diff.speed);
             if (pipes.length && pipes[0].x < -PIPE_W - 10) pipes.shift();
             const last = pipes[pipes.length - 1];
-            if (!last || last.x < GW - PIPE_DIST) addPipe();
+            if (!last || last.x < GW - diff.dist) addPipe();
 
             // Score
             pipes.forEach(p => {
@@ -724,8 +796,8 @@
             // Collision
             if (bird.y + BIRD_H/2 > GROUND_Y - 2 || bird.y - BIRD_H/2 < 0) die();
             pipes.forEach(p => {
-                if (bird.x + BIRD_W/2 - 12 > p.x && bird.x - BIRD_W/2 + 12 < p.x + PIPE_W) {
-                    if (bird.y - BIRD_H/2 + 10 < p.topH || bird.y + BIRD_H/2 - 10 > p.topH + PIPE_GAP) die();
+                if (bird.x + BIRD_W/2 - diff.hbx > p.x && bird.x - BIRD_W/2 + diff.hbx < p.x + PIPE_W) {
+                    if (bird.y - BIRD_H/2 + diff.hby < p.topH || bird.y + BIRD_H/2 - diff.hby > p.topH + diff.gap) die();
                 }
             });
         }
@@ -767,10 +839,45 @@
 
     // ============ INPUT ============
     document.addEventListener('keydown', e => {
+        if (state === 'title') {
+            if (e.code === 'ArrowUp') { e.preventDefault(); selectedIdx = Math.max(0, selectedIdx - 1); sfxScore(); return; }
+            if (e.code === 'ArrowDown') { e.preventDefault(); selectedIdx = Math.min(LEVEL_KEYS.length - 1, selectedIdx + 1); sfxScore(); return; }
+            if (e.code === 'Space' || e.code === 'Enter') { e.preventDefault(); flap(); return; }
+            return;
+        }
         if (e.code === 'Space' || e.code === 'ArrowUp') { e.preventDefault(); flap(); }
     });
-    canvas.addEventListener('click', e => { e.preventDefault(); flap(); });
-    canvas.addEventListener('touchstart', e => { e.preventDefault(); flap(); });
+    function handleCanvasTap(clientX, clientY) {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = GW / rect.width;
+        const scaleY = GH / rect.height;
+        const cx = (clientX - rect.left) * scaleX;
+        const cy = (clientY - rect.top) * scaleY;
+
+        if (state === 'title') {
+            // Check if tapping a level button
+            const sy = 195, rowH = 30;
+            for (let i = 0; i < LEVEL_KEYS.length; i++) {
+                const y = sy + i * rowH;
+                if (cx > GW/2 - 65 && cx < GW/2 + 65 && cy > y - 10 && cy < y + 14) {
+                    if (i === selectedIdx) {
+                        flap(); // double-tap selected = start
+                    } else {
+                        selectedIdx = i;
+                        initAudio();
+                        sfxScore();
+                    }
+                    return;
+                }
+            }
+            // Tap elsewhere = start with selected
+            flap();
+            return;
+        }
+        flap();
+    }
+    canvas.addEventListener('click', e => { e.preventDefault(); handleCanvasTap(e.clientX, e.clientY); });
+    canvas.addEventListener('touchstart', e => { e.preventDefault(); handleCanvasTap(e.touches[0].clientX, e.touches[0].clientY); });
 
     document.getElementById('sound-toggle').addEventListener('click', e => {
         e.stopPropagation();
